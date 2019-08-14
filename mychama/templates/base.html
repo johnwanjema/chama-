@@ -54,14 +54,17 @@
           </form>
     
         <ul class="navbar-nav ml-auto nav-flex-icons">
+          {% if user.is_authenticated %}
           <ul>
             <li>
               <a class='btn btn-default' href="/logout">Logout</a>
             </li>
           </ul>
+          {% else %}
           <li>
             <a class='btn btn-default' href="/accounts/login">Login / Register</a>
           </li>
+          {% endif %}
       </div>
       </ul> </nav>
       {% block content %} {%endblock%}
