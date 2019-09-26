@@ -1,21 +1,31 @@
 from django.db import models
 import datetime as dt
 from django.contrib.auth.models import User
+from django.conf import settings
 # Create your models here.
 class Group(models.Model):
-    group_name = models.CharField(max_length=150)
-    image = models.ImageField(upload_to='photos')
-    description = models.CharField(max_length=255)
-    Adress = models.EmailField(blank=True)
-    registration_date = models.DateTimeField(auto_now_add=True)
-
+    groupName = models.CharField(max_length=255, unique=True)
+    paybillNo = models.PositiveIntegerField(unique=True)
+    contribution_amnt = models.DecimalField(
+        max_digits=10, decimal_places=2)
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='chama', through='Membership', blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='admin')
+    PAYMENT_TYPE = (
+        ('d', 'Daily'),
+        ('w', 'Weekly'),
+        ('m', 'Monthly'),
+        ('q', 'Quartely')
+    )
+    contribution_interval = models.CharField(max_length=1, choices=PAYMENT_TYPE,
+                                             blank=True, default='d', help_text='Contribution Intervals')
 
     class Meta:
-        ordering = ('group_name',)
-    
+        ordering = ['groupName']
 
     def __str__(self):
-        return self.group_name
+        return self.groupName
 
 
 class Individual(models.Model):
@@ -67,8 +77,6 @@ class Individual_contribution(models.Model):
     Amount_contributed = models.CharField(max_length=150)
     contribution_date = models.DateTimeField(auto_now_add=True)
     individual = models.ForeignKey(Individual)
-    
-
 
     class Meta:
         ordering = ('individual',)
@@ -94,3 +102,12 @@ class Profile(models.Model):
 
     def delete_profile(self):
         self.delete()
+
+class Membership(models.Model):
+    member = models.ForeignKey(
+        settings.AUTH_USER_MODEL, blank=True, on_delete=models.CASCADE)
+    chama = models.ForeignKey(Group, on_delete=models.CASCADE)
+    date_joined = models.DateTimeField(auto_now_add=False)
+
+
+

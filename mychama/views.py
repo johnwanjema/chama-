@@ -1,7 +1,10 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileUpdateForm
-from .models import Profile
+from .forms import ProfileUpdateForm,CreateChamaForm
+from .models import Profile,Individual,Group,Membership
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.utils import timezone
+
 # Create your views here.
 def index(request):    
     return render(request, 'index.html')
@@ -28,3 +31,29 @@ def update_profile(request):
     else:
         form = ProfileUpdateForm()
     return render(request, 'update_profile.html', {'form': form})
+
+class ChamaCreate(CreateView):
+    model = Group
+    form_class = CreateChamaForm
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        chama = form.save()
+        m1 = Membership.objects.create(
+            member=self.request.user, chama=chama, date_joined=timezone.now())
+        return super().form_valid(form)
+
+@login_required(login_url='/accounts/login/')
+def chama(request):
+    form = CreateChamaForm
+    current_user = request.usercurrent_user = requestcurrent_user = request.user.user
+    if request.method == "POST":
+        form = CreateChamaForm(request.POST, request.FILES)
+        if form.is_valid():
+            chama = CreateChamaForm.save(commit=False)
+            chama.created_by = current_user
+            chama.save()
+            return redirect('welcome')
+        else:
+            form = CreateChamaForm(request.POST, request.FILES)
+    return render(request, 'chama_form.html', {"form": form})

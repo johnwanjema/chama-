@@ -7,6 +7,7 @@ urlpatterns=[
     url('^$',views.index,name = 'index'),
     url(r'^profile/edit$',views.update_profile,name='edit'),
     url('profile/', views.index, name='profile'),
+    url('chama/create/', views.chama, name='create-chama'),
 ]
 
 if settings.DEBUG:
