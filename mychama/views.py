@@ -9,6 +9,9 @@ from django.utils import timezone
 def index(request):    
     return render(request, 'index.html')
 
+def loan(request):    
+    return render(request, 'loan.html')
+
 @login_required(login_url='/accounts/login')
 def profile(request):
     current_user = request.user
