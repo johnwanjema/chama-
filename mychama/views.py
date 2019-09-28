@@ -49,14 +49,16 @@ class ChamaCreate(CreateView):
 @login_required(login_url='/accounts/login/')
 def chama(request):
     form = CreateChamaForm
-    current_user = request.usercurrent_user = requestcurrent_user = request.user.user
+    chamas = Group.objects.all()
+    print(chamas)
+    current_user = request.user
     if request.method == "POST":
         form = CreateChamaForm(request.POST, request.FILES)
         if form.is_valid():
-            chama = CreateChamaForm.save(commit=False)
+            chama = form.save(commit=False)
             chama.created_by = current_user
             chama.save()
-            return redirect('welcome')
+            return redirect('index')
         else:
             form = CreateChamaForm(request.POST, request.FILES)
-    return render(request, 'chama_form.html', {"form": form})
+    return render(request, 'chama_form.html', {"form": form,"chamas": chamas})

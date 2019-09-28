@@ -13,10 +13,10 @@ class Group(models.Model):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='admin')
     PAYMENT_TYPE = (
-        ('d', 'Daily'),
-        ('w', 'Weekly'),
-        ('m', 'Monthly'),
-        ('q', 'Quartely')
+        ('D', 'Daily'),
+        ('W', 'Weekly'),
+        ('M', 'Monthly'),
+        ('Q', 'Quartely')
     )
     contribution_interval = models.CharField(max_length=1, choices=PAYMENT_TYPE,
                                              blank=True, default='d', help_text='Contribution Intervals')
